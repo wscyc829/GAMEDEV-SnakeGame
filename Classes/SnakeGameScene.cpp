@@ -282,45 +282,45 @@ void SnakeGame::update(float dt)
 				break;
 		}
 
-		if (x < 0 || x > Director::getInstance()->getVisibleSize().width ||
-			y < 0 || y > Director::getInstance()->getVisibleSize().height)
+		//delete the last body if didnt eat food
+		Vec2 f = food->getPosition();
+
+		if (x == f.x && y == f.y)
 		{
-			newGame();
-		}
-		else if (isHitSnake(x, y))
-		{
-			newGame();
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
+				"gotItem.mp3");
+
+			randomFood();
+			score++;
+
+			updateScore();
 		}
 		else
 		{
-			//add a new body in front
-			auto mySprite = Sprite::create("snakes.png", Rect(SPRITE_WIDTH * 3, 0,
-				SPRITE_WIDTH, SPRITE_HEIGHT));
-			mySprite->setAnchorPoint(Vec2(0, 0));
-			mySprite->setPosition(Vec2(x, y));
-			this->addChild(mySprite);
+			this->removeChild(snake.at(snake.size() - 1));
+			snake.pop_back();
 
-			snake.insert(snake.begin(), mySprite);
-
-			//delete the last body if didnt eat food
-			Vec2 p = food->getPosition();
-
-			if (x == p.x && y == p.y)
+			if (x < 0 || x > Director::getInstance()->getVisibleSize().width ||
+				y < 0 || y > Director::getInstance()->getVisibleSize().height)
 			{
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
-					"gotItem.mp3");
-				
-				randomFood();
-				score++;
-
-				updateScore();
+				newGame();
+				return;
 			}
-			else
+			else if (isHitSnake(x, y))
 			{
-				this->removeChild(snake.at(snake.size() - 1));
-				snake.pop_back();
+				newGame();
+				return;
 			}
+			
 		}
+		//add a new body in front
+		auto mySprite = Sprite::create("snakes.png", Rect(SPRITE_WIDTH * 3, 0,
+			SPRITE_WIDTH, SPRITE_HEIGHT));
+		mySprite->setAnchorPoint(Vec2(0, 0));
+		mySprite->setPosition(Vec2(x, y));
+		this->addChild(mySprite);
+
+		snake.insert(snake.begin(), mySprite);
 		speed_counter = 0;
 
 		updateSprites();
@@ -463,28 +463,32 @@ void SnakeGame::updateScore()
 // Implementation of the keyboard event callback function prototype
 void SnakeGame::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-
-	switch ((int)keyCode)
+	
+	switch (keyCode)
 	{
-		case 28:
+		case EventKeyboard::KeyCode::KEY_W :
+		case EventKeyboard::KeyCode::KEY_UP_ARROW :
 			if (direction == 3 || direction == 4)
 			{
 				direction = 1;
 			}
 			break;
-		case 29:
+		case EventKeyboard::KeyCode::KEY_S :
+		case EventKeyboard::KeyCode::KEY_DOWN_ARROW :
 			if (direction == 3 || direction == 4)
 			{
 				direction = 2;
 			}
 			break;
-		case 26:
+		case EventKeyboard::KeyCode::KEY_A :
+		case EventKeyboard::KeyCode::KEY_LEFT_ARROW :
 			if (direction == 1 || direction == 2)
 			{
 				direction = 3;
 			}
 			break;
-		case 27:
+		case EventKeyboard::KeyCode::KEY_D:
+		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW :
 			if (direction == 1 || direction == 2)
 			{
 				direction = 4;
