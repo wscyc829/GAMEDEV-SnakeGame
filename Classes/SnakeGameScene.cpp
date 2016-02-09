@@ -36,8 +36,8 @@ bool SnakeGame::init()
 
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
+                                           "arrow.png",
+                                           "arrow_clicked.png",
                                            CC_CALLBACK_1(SnakeGame::menuCloseCallback, this));
     
 	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
@@ -497,11 +497,11 @@ void SnakeGame::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 void SnakeGame::menuCloseCallback(Ref* pSender)
 {
-    Director::getInstance()->end();
+	auto director = Director::getInstance();
+	auto scene = GameMenu::createScene();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
-#endif
+	// run
+	director->replaceScene(scene);
 }
 
 
