@@ -34,7 +34,7 @@ bool GameMenu::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	auto label = Label::createWithTTF("Welcome To Snake Game", "fonts/Marker Felt.ttf", 24);
-
+	label->setColor(Color3B(0, 0, 0));
 	// position the label on the center of the screen
 	label->setPosition(Vec2(origin.x + visibleSize.width/2,
 	origin.y + visibleSize.height - label->getContentSize().height));
@@ -99,18 +99,95 @@ bool GameMenu::init()
 	});
 	this->addChild(quit_button);
 
+	drawBackground();
 	return true;
 }
 
-void GameMenu::startGameCallback(Ref* pSender)
-{
-	auto director = Director::getInstance();
-	auto scene = SnakeGame::createScene();
 
-	// run
-	director->replaceScene(scene);
+void GameMenu::drawBackground()
+{
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
+	for (int i = 0; i < visibleSize.width; i += SPRITE_WIDTH)
+	{
+		for (int j = 0; j < visibleSize.height; j += SPRITE_HEIGHT)
+		{
+			int origin_x = 0;
+			int origin_y = 0;
+
+			if (i == 0)
+			{
+				if (j == 0)
+				{
+					origin_y = SPRITE_HEIGHT * 2;
+				}
+				else if (j > 0 && j < visibleSize.height - SPRITE_HEIGHT)
+				{
+					origin_y = SPRITE_HEIGHT;
+				}
+			}
+			else if (i == visibleSize.width - SPRITE_WIDTH)
+			{
+				if (j == 0)
+				{
+					origin_x = SPRITE_WIDTH * 2;
+					origin_y = SPRITE_HEIGHT * 2;
+				}
+				else if (j > 0 && j < visibleSize.height - SPRITE_HEIGHT)
+				{
+					origin_x = SPRITE_WIDTH * 2;
+					origin_y = SPRITE_HEIGHT;
+				}
+				else if (j == visibleSize.height - SPRITE_HEIGHT)
+				{
+					origin_x = SPRITE_WIDTH * 2;
+				}
+			}
+			else if (j == 0)
+			{
+				if (i > 0 && i < visibleSize.width - SPRITE_WIDTH)
+				{
+					origin_x = SPRITE_WIDTH;
+					origin_y = SPRITE_HEIGHT * 2;
+				}
+			}
+			else if (j == visibleSize.height - SPRITE_HEIGHT)
+			{
+				if (i > 0 && i < visibleSize.width - SPRITE_WIDTH)
+				{
+					origin_x = SPRITE_WIDTH;
+				}
+			}
+			else
+			{
+				origin_x = SPRITE_WIDTH;
+				origin_y = SPRITE_HEIGHT;
+			}
+
+			createSprite("bg.png", origin_x, origin_y, i, j, -1);
+		}
+	}
+
+	//add a snake
+	createSprite("snakes.png", SPRITE_WIDTH * 4, SPRITE_HEIGHT * 2, 140, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 170, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 200, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 230, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 260, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 290, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 320, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH, 0, 350, visibleSize.height / 2, 1);
+	createSprite("snakes.png", SPRITE_WIDTH * 4, 0, 380, visibleSize.height / 2, 1);
+	createSprite("snakes.png", 0, SPRITE_HEIGHT * 3, 440, visibleSize.height / 2, 1);
 }
 
+void GameMenu::createSprite(std::string file, int origin_x, int origin_y, int x, int y, int z)
+{
+	auto mySprite = Sprite::create(file, Rect(origin_x, origin_y, SPRITE_WIDTH, SPRITE_HEIGHT));
+	mySprite->setAnchorPoint(Vec2(0, 0));
+	mySprite->setPosition(Vec2(x, y));
+	this->addChild(mySprite, z);
+}
 
 void GameMenu::menuCloseCallback(Ref* pSender)
 {

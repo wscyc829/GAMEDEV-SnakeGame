@@ -50,17 +50,19 @@ bool SnakeGame::init()
 
 	//score
 	score_label = Label::createWithTTF("Score: 0", "fonts/Marker Felt.ttf", 24);
+	score_label->setColor(Color3B(0, 0, 0));
 	score_label->setPosition(Vec2(score_label->getContentSize().width / 2 + 10,
 		origin.y + visibleSize.height - score_label->getContentSize().height));
 	this->addChild(score_label, 1);
 	
 	//high score
 	high_score_label = Label::createWithTTF("High Score: 0", "fonts/Marker Felt.ttf", 24);
+	high_score_label->setColor(Color3B(0, 0, 0));
 	high_score_label->setPosition(Vec2(origin.x + visibleSize.width - high_score_label->getContentSize().width / 2 - 10,
 		origin.y + visibleSize.height - high_score_label->getContentSize().height));
 	this->addChild(high_score_label, 1);
 
-	drawBackGround();
+	drawBackground();
 
 	food = Sprite::create("snakes.png", Rect(0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT));
 	food->setAnchorPoint(Vec2(0, 0));
@@ -82,7 +84,7 @@ bool SnakeGame::init()
     return true;
 }
 
-void SnakeGame::drawBackGround()
+void SnakeGame::drawBackground()
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -147,12 +149,14 @@ void SnakeGame::drawBackGround()
 		}
 	}
 }
+
 void SnakeGame::newGame()
 {
 	score = 0;
 	direction = 4;
 	randomFood();
 	updateScore();
+
 	//remove all sprites muna
 	for (int i = 0; i < snake.size(); i++)
 	{
@@ -160,13 +164,33 @@ void SnakeGame::newGame()
 	}
 
 	snake.clear();
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
 	int n = 5;
+	int origin_x = 0;
+	int origin_y = 0;
+
 	for (int i = 0; i < n; i++)
 	{
-		auto mySprite = Sprite::create("snakes.png", Rect(SPRITE_WIDTH * 4, 0,
+		if (i == 0)
+		{
+			origin_x = SPRITE_WIDTH * 4;
+			origin_y = 0;
+		}
+		else if (i == n - 1)
+		{
+			origin_x = SPRITE_WIDTH * 4;
+			origin_y = SPRITE_HEIGHT * 2;
+		}
+		else
+		{
+			origin_x = SPRITE_WIDTH;
+			origin_y = 0;
+		}
+		auto mySprite = Sprite::create("snakes.png", Rect(origin_x, origin_y,
 			SPRITE_WIDTH, SPRITE_HEIGHT));
 		mySprite->setAnchorPoint(Vec2(0, 0));
-		mySprite->setPosition(Vec2(SPRITE_WIDTH * (n - i), 0));
+		mySprite->setPosition(Vec2(150 + SPRITE_WIDTH * (n - i), visibleSize.height/2));
 		snake.push_back(mySprite);
 		this->addChild(mySprite);
 	}

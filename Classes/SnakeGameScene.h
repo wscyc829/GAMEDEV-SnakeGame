@@ -23,7 +23,7 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-	void drawBackGround();
+	void drawBackground();
 	void newGame();
 	void randomFood();
 	int getDirection(int x1, int y1, int x2, int y2);
