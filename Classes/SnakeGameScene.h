@@ -15,7 +15,9 @@ class SnakeGame : public cocos2d::Layer
 	int hight_score = 0;
 
 	std::vector<Sprite*> snake;
-	Sprite* food;
+	Sprite* apple;
+	Sprite* iPhone;
+	Sprite* mac;
 
 	Label* score_label;
 	Label* high_score_label;

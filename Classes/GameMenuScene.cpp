@@ -33,7 +33,7 @@ bool GameMenu::init()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	auto label = Label::createWithTTF("Welcome To Snake Game", "fonts/Marker Felt.ttf", 24);
+	auto label = Label::createWithTTF("Welcome To iSnake", "fonts/Marker Felt.ttf", 24);
 	label->setColor(Color3B(0, 0, 0));
 	// position the label on the center of the screen
 	label->setPosition(Vec2(origin.x + visibleSize.width/2,

@@ -64,9 +64,17 @@ bool SnakeGame::init()
 
 	drawBackground();
 
-	food = Sprite::create("snakes.png", Rect(0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT));
-	food->setAnchorPoint(Vec2(0, 0));
-	this->addChild(food);
+	apple = Sprite::create("snakes.png", Rect(0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT));
+	apple->setAnchorPoint(Vec2(0, 0));
+	this->addChild(apple);
+
+	iPhone = Sprite::create("phone.png");
+	iPhone->setAnchorPoint(Vec2(0, 0));
+	this->addChild(iPhone);
+
+	mac = Sprite::create("mac.png");
+	mac->setAnchorPoint(Vec2(0, 0));
+	this->addChild(mac);
 
 	srand(time(NULL));
 
@@ -224,9 +232,11 @@ int SnakeGame::getDirection(int x1, int y1, int x2, int y2)
 
 void SnakeGame::randomFood()
 {
-	bool isDone = false;
+	bool isAppleDone = false;
+	bool isIPhoneDone = false;
+	bool isMacDone = false;
 
-	while (!isDone)
+	while (!isAppleDone || !isIPhoneDone || !isMacDone)
 	{
 		Size s = Director::getInstance()->getVisibleSize();
 		int x = rand() % ((int)s.width / SPRITE_WIDTH - 1) * SPRITE_WIDTH;
@@ -234,9 +244,25 @@ void SnakeGame::randomFood()
 
 		if (!isHitSnake(x, y))
 		{
-			auto moveTo = MoveTo::create(0, Vec2(x, y));
-			food->runAction(moveTo);
-			isDone = true;
+			if (!isAppleDone)
+			{
+				auto moveTo = MoveTo::create(0, Vec2(x, y));
+				apple->runAction(moveTo);
+				isAppleDone = true;
+			}
+			else if (!isIPhoneDone)
+			{
+				auto moveTo = MoveTo::create(0, Vec2(x, y));
+				iPhone->runAction(moveTo);
+				isIPhoneDone = true;
+			}
+			else if (!isMacDone)
+			{
+				auto moveTo = MoveTo::create(0, Vec2(x, y));
+				mac->runAction(moveTo);
+				isMacDone = true;
+			}
+			
 		}
 	}
 }
@@ -281,11 +307,12 @@ void SnakeGame::update(float dt)
 			default:
 				break;
 		}
-
+		
 		//delete the last body if didnt eat food
-		Vec2 f = food->getPosition();
-
-		if (x == f.x && y == f.y)
+		Vec2 phone_p = iPhone->getPosition();
+		Vec2 apple_p = apple->getPosition();
+		Vec2 mac_p = mac->getPosition();
+		if (x == apple_p.x && y == apple_p.y || x == phone_p.x && y == phone_p.y)
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
 				"gotItem.mp3");
@@ -294,6 +321,22 @@ void SnakeGame::update(float dt)
 			score++;
 
 			updateScore();
+		}
+		else if (x == mac_p.x && y == mac_p.y)
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
+				"gotItem.mp3");
+
+			score += 5;
+			randomFood();
+			updateScore();
+			if (snake.size() > 5)
+			{
+				this->removeChild(snake.at(snake.size() - 1));
+				snake.pop_back();
+			}
+			this->removeChild(snake.at(snake.size() - 1));
+			snake.pop_back();
 		}
 		else
 		{
@@ -313,6 +356,8 @@ void SnakeGame::update(float dt)
 			}
 			
 		}
+
+		
 		//add a new body in front
 		auto mySprite = Sprite::create("snakes.png", Rect(SPRITE_WIDTH * 3, 0,
 			SPRITE_WIDTH, SPRITE_HEIGHT));
@@ -324,6 +369,7 @@ void SnakeGame::update(float dt)
 		speed_counter = 0;
 
 		updateSprites();
+		
 	}
 	else
 	{
