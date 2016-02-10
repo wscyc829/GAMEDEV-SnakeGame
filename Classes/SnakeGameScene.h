@@ -18,6 +18,9 @@ class SnakeGame : public cocos2d::Layer
 	Sprite* apple;
 	Sprite* iPhone;
 	Sprite* mac;
+	bool isAppleEaten = true;
+	bool isIPhoneEaten = true;
+	bool isMacEaten = true;
 
 	Label* score_label;
 	Label* high_score_label;

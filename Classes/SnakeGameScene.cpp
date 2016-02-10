@@ -162,6 +162,9 @@ void SnakeGame::newGame()
 {
 	score = 0;
 	direction = 4;
+	isAppleEaten = true;
+	isIPhoneEaten = true;
+	isMacEaten = true;
 	randomFood();
 	updateScore();
 
@@ -236,6 +239,18 @@ void SnakeGame::randomFood()
 	bool isIPhoneDone = false;
 	bool isMacDone = false;
 
+	if (!isAppleEaten)
+	{
+		isAppleDone = true;
+	}
+	if (!isIPhoneEaten)
+	{
+		isIPhoneDone = true;
+	}
+	if (!isMacEaten)
+	{
+		isMacEaten = true;
+	}
 	while (!isAppleDone || !isIPhoneDone || !isMacDone)
 	{
 		Size s = Director::getInstance()->getVisibleSize();
@@ -249,18 +264,21 @@ void SnakeGame::randomFood()
 				auto moveTo = MoveTo::create(0, Vec2(x, y));
 				apple->runAction(moveTo);
 				isAppleDone = true;
+				isAppleEaten = false;
 			}
 			else if (!isIPhoneDone)
 			{
 				auto moveTo = MoveTo::create(0, Vec2(x, y));
 				iPhone->runAction(moveTo);
 				isIPhoneDone = true;
+				isIPhoneEaten = false;
 			}
 			else if (!isMacDone)
 			{
 				auto moveTo = MoveTo::create(0, Vec2(x, y));
 				mac->runAction(moveTo);
 				isMacDone = true;
+				isMacEaten = false;
 			}
 			
 		}
@@ -313,7 +331,15 @@ void SnakeGame::update(float dt)
 		Vec2 apple_p = apple->getPosition();
 		Vec2 mac_p = mac->getPosition();
 		if (x == apple_p.x && y == apple_p.y || x == phone_p.x && y == phone_p.y)
-		{
+		{ 
+			if (x == apple_p.x && y == apple_p.y)
+			{
+				isAppleEaten = true;
+			}
+			else
+			{
+				isIPhoneEaten = true;
+			}
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(
 				"gotItem.mp3");
 
@@ -336,7 +362,10 @@ void SnakeGame::update(float dt)
 				snake.pop_back();
 			}
 			this->removeChild(snake.at(snake.size() - 1));
+			snake.pop_back(); this->removeChild(snake.at(snake.size() - 1));
 			snake.pop_back();
+
+			isMacEaten = true;
 		}
 		else
 		{
@@ -357,7 +386,6 @@ void SnakeGame::update(float dt)
 			
 		}
 
-		
 		//add a new body in front
 		auto mySprite = Sprite::create("snakes.png", Rect(SPRITE_WIDTH * 3, 0,
 			SPRITE_WIDTH, SPRITE_HEIGHT));
